@@ -15,8 +15,12 @@ router.get('/:destinationAddres/:amount', async (req, res, next) => {
       msg: 'No available unspent txs'
     });
   };
-  const txHash = await bitcoinController.generateTransaction(unspentTxs, destinationAddres, Number(amount * 10**8));
-  res.send({ txHash });
+  try {
+    const txHash = await bitcoinController.generateTransaction(unspentTxs, destinationAddres, Number(amount * 10**8));
+    res.send({ txHash });
+  } catch (err) {
+    res.status(400).send({ msg: err });
+  }
 });
 
 module.exports = router;

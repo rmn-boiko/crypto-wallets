@@ -6,9 +6,9 @@ class BitcoinController {
   address = process.env.ADDRESS
   wif = process.env.WIF
   providerUrl = 'https://api.blockcypher.com/v1/btc/test3'
-  defaultFee = 500000 // it will be 0.00005 BTC
-  _calculateChange (balance) {
-    return balance-this.defaultFee;
+  defaultFee = 5000 // it will be 0.00005 BTC
+  _calculateChange (balance, amountToSend) {
+    return balance-this.defaultFee-amountToSend;
   }
   async _sendTransaction (txHex) {
     const result = await axios.post(`${this.providerUrl}/txs/push`, {
@@ -25,7 +25,10 @@ class BitcoinController {
     return result.data.hex;
   }
   async generateTransaction (unpentTxs, destinationAddress, amountToSend) {
-    const change = this._calculateChange(unpentTxs.balance);
+    const change = this._calculateChange(unpentTxs.balance, amountToSend);
+    if (amountToSend > unpentTxs.balance || change < 0) {
+      throw new Error('Not enough balance');
+    }
     const keypair = bitcoin.ECPair.fromWIF(this.wif, bitcoin.networks.testnet);
     const tx = new bitcoin.Psbt({ network: bitcoin.networks.testnet });
     tx.addOutput({

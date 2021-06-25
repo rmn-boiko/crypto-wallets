@@ -50,7 +50,7 @@ class BitcoinController {
     const completedTx = tx.extractTransaction()
 
     const txHash = completedTx.toHex();
-    console.log(txHash)
+
     const pushedTxInfo = await this._sendTransaction(txHash);
     return pushedTxInfo.hash;
   };

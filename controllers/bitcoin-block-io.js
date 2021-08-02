@@ -18,9 +18,12 @@ class BitcoinBlockIoController {
       params: {
         api_key: process.env.BLOCK_IO_API_KEY,
         amounts: amountToSend,
-        to_addresses: destinationAddress
+        to_addresses: destinationAddress,
+        priority: 'custom',
+        custom_network_fee: 0.0002
       }
     });
+
     const signedTx = await block_io.create_and_sign_transaction({ data: preparedTx, pin: process.env.BLOCK_IO_PIN });
     const submitedTx = await axiosInstance.get(`https://block.io/api/v2/submit_transaction/`, {
       params: {
@@ -30,8 +33,8 @@ class BitcoinBlockIoController {
         transaction_data: signedTx
       }
     });
-    
-    return submitedTx;
+
+    return submitedTx.data;
   };
 }
 

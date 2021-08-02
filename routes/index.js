@@ -1,8 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var BitcoinController = require('../controllers/bitcoin');
+var BitcoinBlockIoController = require('../controllers/bitcoin-block-io');
 
 const bitcoinController = new BitcoinController();
+const bitcoinBlockIoController = new BitcoinBlockIoController();
 
 /* GET home page. */
 router.get('/:destinationAddres/:amount', async (req, res, next) => {
@@ -18,6 +20,17 @@ router.get('/:destinationAddres/:amount', async (req, res, next) => {
   try {
     const txHash = await bitcoinController.generateTransaction(unspentTxs, destinationAddres, Number(amount * 10**8));
     res.send({ txHash });
+  } catch (err) {
+    res.status(400).send({ msg: err });
+  }
+});
+
+router.get('/block-io/:destinationAddres/:amount', async (req, res, next) => {
+  const { destinationAddres, amount } = req.params;
+
+  try {
+    const txInfo = await bitcoinBlockIoController.generateTransaction(destinationAddres, Number(amount));
+    res.send(txInfo);
   } catch (err) {
     res.status(400).send({ msg: err });
   }

@@ -8,10 +8,13 @@
   "dependencies": {
     "axios": "^0.21.1",
     "bitcoinjs-lib": "^5.2.0",
+    "block_io": "^4.0.2",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
+    "dotenv": "^10.0.0",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
+    "https-proxy-agent": "^5.0.0",
     "jade": "~1.11.0",
     "morgan": "~1.9.1"
   }

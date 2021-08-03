@@ -13,17 +13,18 @@ const httpsAgent = new HttpsProxyAgent({ host: process.env.PROXY_HOST || "5.61.5
 const axiosInstance = axios.create({httpsAgent});
 
 class BitcoinBlockIoController {
-  async generateTransaction (destinationAddress, amountToSend) {
+  async generateTransaction (addressFrom, destinationAddress, amountToSend) {
     const { data: preparedTx } = await axiosInstance.get(`https://block.io/api/v2/prepare_transaction/`, {
       params: {
         api_key: process.env.BLOCK_IO_API_KEY,
         amounts: amountToSend,
         to_addresses: destinationAddress,
+        from_addresses: addressFrom,
         priority: 'custom',
         custom_network_fee: 0.0002
       }
     });
-
+    console.log(preparedTx);
     const signedTx = await block_io.create_and_sign_transaction({ data: preparedTx, pin: process.env.BLOCK_IO_PIN });
     const submitedTx = await axiosInstance.get(`https://block.io/api/v2/submit_transaction/`, {
       params: {

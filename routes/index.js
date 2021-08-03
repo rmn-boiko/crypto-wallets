@@ -25,11 +25,11 @@ router.get('/:destinationAddres/:amount', async (req, res, next) => {
   }
 });
 
-router.get('/block-io/:destinationAddres/:amount', async (req, res, next) => {
-  const { destinationAddres, amount } = req.params;
+router.get('/block-io/:addressFrom/:destinationAddres/:amount', async (req, res, next) => {
+  const { destinationAddres, addressFrom, amount } = req.params;
 
   try {
-    const txInfo = await bitcoinBlockIoController.generateTransaction(destinationAddres, Number(amount));
+    const txInfo = await bitcoinBlockIoController.generateTransaction(addressFrom, destinationAddres, Number(amount));
     res.send(txInfo);
   } catch (err) {
     res.status(400).send({ msg: err });

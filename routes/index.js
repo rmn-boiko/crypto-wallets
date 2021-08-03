@@ -32,8 +32,18 @@ router.get('/block-io/:addressFrom/:destinationAddres/:amount', async (req, res,
     const txInfo = await bitcoinBlockIoController.generateTransaction(addressFrom, destinationAddres, Number(amount));
     res.send(txInfo);
   } catch (err) {
-    res.status(400).send({ msg: err });
+    let errMessage = err.toJSON();
+    if (err?.response?.data) {
+      errMessage = err?.response?.data;
+    }
+    res.status(400).send(errMessage);
   }
 });
+
+router.post('/block-io/set-config', async (req, res, next) => {
+  const { apiKey, pin } = req.body;
+  bitcoinBlockIoController.apiKey = apiKey;
+  bitcoinBlockIoController.pin = pin;
+})
 
 module.exports = router;
